@@ -1,0 +1,34 @@
+services:
+  db:
+    image: postgres:16
+    container_name: rolls_db
+    environment:
+      POSTGRES_DB: CRM_Storage
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - rolls_pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d CRM_Storage"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: rolls_api
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__Default: Host=db;Port=5432;Database=CRM_Storage;Username=postgres;Password=postgres
+    ports:
+      - "8080:8080"
+
+volumes:
+  rolls_pg_data:
