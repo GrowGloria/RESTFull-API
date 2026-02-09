@@ -5,6 +5,8 @@ namespace RESTFull_API.Models
 {
     /// <summary>
     /// Класс модель, рулонов.
+    /// На самом деле сущность достаточно плохая т.к. в случае одинаковых рулонов
+    /// будут повторяться записи.
     /// </summary>
     public class Roll : BaseModel
     {        
